@@ -23,7 +23,6 @@ import org.gradle.internal.logging.progress.ProgressLoggerFactory;
 import org.gradle.internal.service.DefaultServiceLocator;
 import org.gradle.internal.service.ServiceLocator;
 import org.gradle.tooling.GradleConnectionException;
-import org.gradle.tooling.KodTikConnectionException;
 import org.gradle.tooling.UnsupportedVersionException;
 import org.gradle.tooling.internal.adapter.ProtocolToModelAdapter;
 import org.gradle.tooling.internal.consumer.ConnectionParameters;
@@ -127,16 +126,11 @@ public class DefaultToolingImplementationLoader implements ToolingImplementation
     } catch (UnsupportedVersionException e) {
       throw e;
     } catch (Throwable t) {
-      // deenu modify: throw KodTikConnectionException
-      String message =
+      throw new GradleConnectionException(
           String.format(
               "Could not create an instance of Tooling API implementation using the specified %s.",
-              distribution.getDisplayName());
-      if (isKodTik()) {
-        throw new KodTikConnectionException(message, t);
-      } else {
-        throw new GradleConnectionException(message, t);
-      }
+              distribution.getDisplayName()),
+          t);
     }
   }
 
