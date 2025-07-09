@@ -234,7 +234,8 @@ public class DistributionFactory {
   public static class DefaultDistribution implements Distribution {
     @Override
     public String getDisplayName() {
-      return "Gradle distribution bundled in DefaultDistribution";
+      String buildSystem = isKodTik() == true ? "KodTik" : "Gradle";
+      return buildSystem + " distribution bundled in DefaultDistribution";
     }
 
     @Override

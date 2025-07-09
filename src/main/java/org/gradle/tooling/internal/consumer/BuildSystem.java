@@ -21,6 +21,6 @@ package org.gradle.tooling.internal.consumer;
 public abstract class BuildSystem {
 
   public static boolean isKodTik() {
-    return Boolean.parseBoolean(System.getProperty("kodtik.build.system.enabled","true"));
-    }
+    return Boolean.parseBoolean(System.getProperty("kodtik.build.system.enabled", "true"));
+  }
 }

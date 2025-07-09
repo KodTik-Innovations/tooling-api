@@ -15,12 +15,15 @@
  */
 package org.gradle.tooling.internal.consumer.loader;
 
+import static org.gradle.tooling.internal.consumer.BuildSystem.isKodTik;
+
 import org.gradle.initialization.BuildCancellationToken;
 import org.gradle.internal.Factory;
 import org.gradle.internal.logging.progress.ProgressLoggerFactory;
 import org.gradle.internal.service.DefaultServiceLocator;
 import org.gradle.internal.service.ServiceLocator;
 import org.gradle.tooling.GradleConnectionException;
+import org.gradle.tooling.KodTikConnectionException;
 import org.gradle.tooling.UnsupportedVersionException;
 import org.gradle.tooling.internal.adapter.ProtocolToModelAdapter;
 import org.gradle.tooling.internal.consumer.ConnectionParameters;
@@ -47,7 +50,6 @@ import org.gradle.tooling.internal.protocol.InternalStopWhenIdleConnection;
 import org.gradle.tooling.internal.protocol.test.InternalTestExecutionConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static org.gradle.tooling.internal.consumer.BuildSystem.isKodTik;
 
 /**
  * Loads the tooling API implementation of the Gradle version that will run the build (the
@@ -84,45 +86,58 @@ public class DefaultToolingImplementationLoader implements ToolingImplementation
             cancellationToken);
     ServiceLocator serviceLocator = new DefaultServiceLocator(serviceClassLoader);
     try {
-      Factory<ConnectionVersion4> factory = serviceLocator.findFactory(ConnectionVersion4.class);
-      if (factory == null) {
-        return new NoToolingApiConnection(distribution);
-      }
-      ConnectionVersion4 connection = factory.create();
-
-      ProtocolToModelAdapter adapter = new ProtocolToModelAdapter(new ConsumerTargetTypeProvider());
-      ModelMapping modelMapping = new ModelMapping();
-      if (connection instanceof InternalStopWhenIdleConnection) {
-        return createConnection(
-            new StopWhenIdleConsumerConnection(connection, modelMapping, adapter),
-            connectionParameters);
-      } else if (connection instanceof InternalInvalidatableVirtualFileSystemConnection) {
-        return createConnection(
-            new NotifyDaemonsAboutChangedPathsConsumerConnection(connection, modelMapping, adapter),
-            connectionParameters);
-      } else if (connection instanceof InternalPhasedActionConnection) {
-        return createConnection(
-            new PhasedActionAwareConsumerConnection(connection, modelMapping, adapter),
-            connectionParameters);
-      } else if (connection instanceof InternalParameterAcceptingConnection) {
-        return createConnection(
-            new ParameterAcceptingConsumerConnection(connection, modelMapping, adapter),
-            connectionParameters);
-      } else if (connection instanceof InternalTestExecutionConnection) {
-        return createConnection(
-            new TestExecutionConsumerConnection(connection, modelMapping, adapter),
-            connectionParameters);
+      // deenu modify: check kodtik
+      if (isKodTik()) {
+        return null;
       } else {
-        return new UnsupportedOlderVersionConnection(connection, adapter);
+        Factory<ConnectionVersion4> factory = serviceLocator.findFactory(ConnectionVersion4.class);
+        if (factory == null) {
+          return new NoToolingApiConnection(distribution);
+        }
+        ConnectionVersion4 connection = factory.create();
+
+        ProtocolToModelAdapter adapter =
+            new ProtocolToModelAdapter(new ConsumerTargetTypeProvider());
+        ModelMapping modelMapping = new ModelMapping();
+        if (connection instanceof InternalStopWhenIdleConnection) {
+          return createConnection(
+              new StopWhenIdleConsumerConnection(connection, modelMapping, adapter),
+              connectionParameters);
+        } else if (connection instanceof InternalInvalidatableVirtualFileSystemConnection) {
+          return createConnection(
+              new NotifyDaemonsAboutChangedPathsConsumerConnection(
+                  connection, modelMapping, adapter),
+              connectionParameters);
+        } else if (connection instanceof InternalPhasedActionConnection) {
+          return createConnection(
+              new PhasedActionAwareConsumerConnection(connection, modelMapping, adapter),
+              connectionParameters);
+        } else if (connection instanceof InternalParameterAcceptingConnection) {
+          return createConnection(
+              new ParameterAcceptingConsumerConnection(connection, modelMapping, adapter),
+              connectionParameters);
+        } else if (connection instanceof InternalTestExecutionConnection) {
+          return createConnection(
+              new TestExecutionConsumerConnection(connection, modelMapping, adapter),
+              connectionParameters);
+        } else {
+          return new UnsupportedOlderVersionConnection(connection, adapter);
+        }
       }
     } catch (UnsupportedVersionException e) {
       throw e;
     } catch (Throwable t) {
-      throw new GradleConnectionException(
+      // deenu modify: throw KodTikConnectionException
+      String message =
           String.format(
               "Could not create an instance of Tooling API implementation using the specified %s.",
-              distribution.getDisplayName()),
-          t);
+              distribution.getDisplayName());
+      if (isKodTik()) {
+        throw new KodTikConnectionException(message, t);
+
+      } else {
+        throw new GradleConnectionException(message, t);
+      }
     }
   }
 
