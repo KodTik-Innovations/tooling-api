@@ -33,8 +33,8 @@ public class DefaultGradleConnector extends GradleConnector implements ProjectCo
 
     public static final GradleVersion MINIMUM_SUPPORTED_GRADLE_VERSION = GradleVersion.version("3.0");
     private final ConnectionFactory connectionFactory;
-    private final DistributionFactory distributionFactory;
-    private Distribution distribution;
+  //  private final DistributionFactory distributionFactory;
+ //   private Distribution distribution;
 
     private final List<DefaultProjectConnection> connections = new ArrayList<DefaultProjectConnection>(4);
     private boolean stopped = false;

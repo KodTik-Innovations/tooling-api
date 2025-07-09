@@ -15,7 +15,13 @@ tasks.assemble.dependsOn tasks.shadowJar
 tasks.build.dependsOn tasks.shadowJar
 
 shadowJar {                                   
-    archiveFileName.set("${project.name}.jar")   
+    archiveFileName.set("${project.name}.jar") 
+    
+    dependencies {
+        exclude(dependency("com.google.code.findbugs:jsr305:3.0.2")) 
+        exclude(dependency("com.google.guava:guava:33.4.6-jre")) 
+     }
+      
 }
 	
 dependencies { 
