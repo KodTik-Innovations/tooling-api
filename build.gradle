@@ -20,6 +20,7 @@ shadowJar {
     dependencies {
         exclude(dependency("com.google.code.findbugs:jsr305:3.0.2")) 
         exclude(dependency("com.google.guava:guava:33.4.6-jre")) 
+        exclude(dependency("org.slf4j:slf4j-api:1.7.36")) 
      }
       
 }
