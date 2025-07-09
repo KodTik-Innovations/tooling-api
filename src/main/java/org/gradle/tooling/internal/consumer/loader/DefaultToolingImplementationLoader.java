@@ -134,7 +134,6 @@ public class DefaultToolingImplementationLoader implements ToolingImplementation
               distribution.getDisplayName());
       if (isKodTik()) {
         throw new KodTikConnectionException(message, t);
-
       } else {
         throw new GradleConnectionException(message, t);
       }
