@@ -23,4 +23,8 @@ public abstract class BuildSystem {
   public static boolean isKodTik() {
     return Boolean.parseBoolean(System.getProperty("kodtik.build.system.enabled", "true"));
   }
+
+  public static String getConsumerConnection() {
+    return System.getProperty("kodtik.build.system.consumer");
+  }
 }

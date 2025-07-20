@@ -15,8 +15,10 @@
  */
 package org.gradle.tooling.internal.consumer.loader;
 
+import static org.gradle.tooling.internal.consumer.BuildSystem.getConsumerConnection;
 import static org.gradle.tooling.internal.consumer.BuildSystem.isKodTik;
 
+import java.lang.reflect.Constructor;
 import org.gradle.initialization.BuildCancellationToken;
 import org.gradle.internal.Factory;
 import org.gradle.internal.logging.progress.ProgressLoggerFactory;
@@ -87,7 +89,22 @@ public class DefaultToolingImplementationLoader implements ToolingImplementation
     try {
       // deenu modify: check kodtik
       if (isKodTik()) {
-        return null;
+        Class<?> clazz = Class.forName(getConsumerConnection());
+        Constructor<?> constructor =
+            clazz.getConstructor(
+                Distribution.class,
+                ProgressLoggerFactory.class,
+                InternalBuildProgressListener.class,
+                ConnectionParameters.class,
+                BuildCancellationToken.class);
+        return (ConsumerConnection)
+            constructor.newInstance(
+                distribution,
+                progressLoggerFactory,
+                progressListener,
+                connectionParameters,
+                cancellationToken);
+
       } else {
         Factory<ConnectionVersion4> factory = serviceLocator.findFactory(ConnectionVersion4.class);
         if (factory == null) {
