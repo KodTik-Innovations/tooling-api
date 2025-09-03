@@ -29,7 +29,8 @@ shadowJar {
 dependencies { 
     implementation("org.gradle:gradle-tooling-api:8.14")
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
-    compileOnly("com.google.guava:guava:33.4.6-jre")    
+    compileOnly("com.google.guava:guava:33.4.6-jre")  
+    compileOnlyApi files("libs/logging.jar")
 }
 
 java {
