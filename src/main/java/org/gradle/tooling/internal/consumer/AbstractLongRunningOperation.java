@@ -196,6 +196,12 @@ public abstract class AbstractLongRunningOperation<T extends AbstractLongRunning
         return getThis();
     }
 
+    @Override
+    public T addTaskListener(org.kodtik.ide.builder.compiler.TaskListener listener) {
+        operationParamsBuilder.addTaskListener(listener);
+        return getThis();
+    }
+
     /**
      * Specifies classpath URIs used for loading user-defined classes. This list is in addition to the default classpath.
      *

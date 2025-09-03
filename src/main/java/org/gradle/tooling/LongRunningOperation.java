@@ -340,4 +340,6 @@ public interface LongRunningOperation {
     LongRunningOperation withDetailedFailure();
     
     LongRunningOperation addLogger(org.kodtik.ide.logging.Logger logger);    
+    
+    LongRunningOperation addTaskListener(org.kodtik.ide.builder.compiler.TaskListener listener);    
 }

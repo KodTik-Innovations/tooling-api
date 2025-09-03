@@ -78,6 +78,7 @@ public class ConsumerOperationParameters implements BuildParameters {
         @Nullable
         private StreamedValueListener streamedValueListener;
         private org.kodtik.ide.logging.Logger logger;
+        private org.kodtik.ide.builder.compiler.TaskListener taskListener;
 
         private Builder() {
         }
@@ -216,7 +217,11 @@ public class ConsumerOperationParameters implements BuildParameters {
         public void addLogger(org.kodtik.ide.logging.Logger logger) {
           this.logger = logger;              
         }
-
+        
+        public void addTaskListener(org.kodtik.ide.builder.compiler.TaskListener taskListener) {
+            this.taskListener = taskListener;       
+        }
+    
         public void setCancellationToken(CancellationToken cancellationToken) {
             this.cancellationToken = cancellationToken;
         }
@@ -248,6 +253,7 @@ public class ConsumerOperationParameters implements BuildParameters {
                 legacyProgressListeners,
                 progressListeners,
                 logger,
+                taskListener,
                 cancellationToken,
                 systemProperties,
                 new FailsafeStreamedValueListener(streamedValueListener)
@@ -258,6 +264,7 @@ public class ConsumerOperationParameters implements BuildParameters {
             tasks = operationParameters.tasks;
             launchables = operationParameters.launchables;
             logger = operationParameters.logger;
+            taskListener = operationParameters.taskListener;
             cancellationToken = operationParameters.cancellationToken;
             legacyProgressListeners.addAll(operationParameters.legacyProgressListeners);
             progressListeners.putAll(operationParameters.progressListeners);
@@ -302,6 +309,7 @@ public class ConsumerOperationParameters implements BuildParameters {
     private final Map<String, String> systemProperties;
     private final FailsafeStreamedValueListener streamedValueListener;
     private final org.kodtik.ide.logging.Logger logger;
+    private final org.kodtik.ide.builder.compiler.TaskListener taskListener;
 
     private ConsumerOperationParameters(
         String entryPointName,
@@ -323,6 +331,7 @@ public class ConsumerOperationParameters implements BuildParameters {
         List<org.gradle.tooling.ProgressListener> legacyProgressListeners,
         Map<OperationType, List<ProgressListener>> progressListeners,
         org.kodtik.ide.logging.Logger logger,
+        org.kodtik.ide.builder.compiler.TaskListener taskListener,
         CancellationToken cancellationToken,
         Map<String, String> systemProperties,
         FailsafeStreamedValueListener streamedValueListener
@@ -345,6 +354,7 @@ public class ConsumerOperationParameters implements BuildParameters {
         this.legacyProgressListeners = legacyProgressListeners;
         this.progressListeners = progressListeners;
         this.logger = logger;
+        this.taskListener = taskListener;
         this.systemProperties = systemProperties;
         this.streamedValueListener = streamedValueListener;
 
@@ -538,6 +548,10 @@ public class ConsumerOperationParameters implements BuildParameters {
  
     public org.kodtik.ide.logging.Logger getLogger() {
         return logger;             
+    }
+    
+    public org.kodtik.ide.builder.compiler.TaskListener getTaskListener() {
+        return taskListener;
     }
 
     public BuildCancellationToken getCancellationToken() {

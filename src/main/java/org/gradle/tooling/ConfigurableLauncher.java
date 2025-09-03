@@ -180,4 +180,7 @@ public interface ConfigurableLauncher<T extends ConfigurableLauncher<T>> extends
     
     @Override
     T addLogger(org.kodtik.ide.logging.Logger logger);
+    
+    @Override
+    T addTaskListener(org.kodtik.ide.builder.compiler.TaskListener listener);    
 }
