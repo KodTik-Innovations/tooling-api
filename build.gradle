@@ -43,7 +43,7 @@ publishing {
         shadow(MavenPublication) { publication ->            
             groupId = 'org.kodtik.ide'
             artifactId = 'tooling-api'
-            version = '8.14' 
+            version = '8.14.2' 
          
             from project.shadow.component(publication) 
         }
