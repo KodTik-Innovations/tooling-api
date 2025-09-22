@@ -2,7 +2,7 @@ plugins {
     id 'java-library'  
     id 'maven-publish'    
     id 'com.github.johnrengelman.shadow' version '8.1.1' 
-    id 'com.diffplug.spotless' version '7.0.3'
+    id 'com.gradleup.shadow' version '9.1.0'
 }
 
 spotless {
@@ -17,13 +17,13 @@ tasks.build.dependsOn tasks.shadowJar
 
 shadowJar {                                   
     archiveFileName.set("${project.name}.jar") 
-    
+    archiveClassifier.set("") 
+       
     dependencies {
         exclude(dependency("com.google.code.findbugs:jsr305:3.0.2")) 
         exclude(dependency("com.google.guava:guava:33.4.6-jre")) 
         exclude(dependency("org.slf4j:slf4j-api:1.7.36")) 
-     }
-      
+     }      
 }
 	
 dependencies { 
@@ -43,9 +43,9 @@ publishing {
         shadow(MavenPublication) { publication ->            
             groupId = 'org.kodtik.ide'
             artifactId = 'tooling-api'
-            version = '8.14.2' 
+            version = '8.14.3' 
          
-            from project.shadow.component(publication) 
+            from(components.shadow)
         }
     }
 }   
