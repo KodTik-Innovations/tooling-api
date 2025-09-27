@@ -18,7 +18,12 @@ tasks.build.dependsOn tasks.shadowJar
 shadowJar {                                   
     archiveFileName.set("${project.name}.jar") 
     archiveClassifier.set("") 
-       
+    
+    exclude 'com/**'
+    exclude 'javax/**'
+    exclude 'org/apache/**'
+    exclude 'org/objectweb/**'
+    
     dependencies {
         exclude(dependency("com.google.code.findbugs:jsr305:3.0.2")) 
         exclude(dependency("com.google.guava:guava:33.4.6-jre")) 
@@ -27,9 +32,12 @@ shadowJar {
 }
 	
 dependencies { 
-    implementation("org.gradle:gradle-tooling-api:8.14")
+    implementation files("libs/remapped-gradle-tooling-api-8.14.jar")
+
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
     compileOnly("com.google.guava:guava:33.4.6-jre")  
+    compileOnly("org.slf4j:slf4j-api:1.7.36")
+    
     compileOnly project(":build-tools")      
 }
 
@@ -43,7 +51,7 @@ publishing {
         shadow(MavenPublication) { publication ->            
             groupId = 'org.kodtik.ide'
             artifactId = 'tooling-api'
-            version = '8.14.3' 
+            version = '8.14.4' 
          
             from(components.shadow)
         }
